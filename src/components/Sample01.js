@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Bitcoin from '../libs/Bitcoin';
-// import { Api } from '../constants';
+import { Api } from '../constants';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -15,10 +15,35 @@ class Sample01 extends Component {
         }
     }
 
+    componentDidMount() {
+
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    getBalance(addr) {
+        fetch(Api.BTCGetBalance(addr))
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('getBalance', responseJson);
+                this.setState({ balance: responseJson.balance });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     initWallet() {
-        const mnemonic = 'hill date natural inhale city explore able still deadly bitter sneak mist';
+        //copper siren differ use like egg sight where spoon learn swamp swarm
+        //saddle marriage volcano stool organ federal february elbow art extra wood thunder
+        const mnemonic = 'copper siren differ use like egg sight where spoon learn swamp swarm';
         const btc = Bitcoin.createAddressFromMasterSeed(mnemonic);
+        console.log('initWallet', btc);
         this.setState({ address: btc.addr, private: btc.privateKey });
+
+        this.getBalance(btc.addr);
     }
 
     render() {
@@ -28,15 +53,12 @@ class Sample01 extends Component {
                 <h2>Btc Address: {this.state.address}</h2>
                 <h2>Btc Balance: {this.state.balance}</h2>
                 <RaisedButton
-                    label="Default"
-                    onTouchTap={() => this.initWallet()} 
+                    label='Init Wallet'
+                    onTouchTap={() => this.initWallet()}
                 />
             </div>
         );
     }
 }
-
-//<h2>Btc Address: {this.state.address}</h2>
-//                <h2>Btc Balance: {this.state.balance}</h2>
 
 export default Sample01;
