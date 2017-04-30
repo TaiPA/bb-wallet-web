@@ -8,3 +8,10 @@ copper siren differ use like egg sight where spoon learn swamp swarm
 involve note unlock relief cliff general quiz tourist grid consider miracle early
 
 —
+
+
+https://testnet.blockexplorer.com/api/addr/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS?noTxList=1&noCache=1
+
+https://testnet.blockexplorer.com/api/txs/?address=mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS
+
+https://testnet.blockexplorer.com/api/addrs/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS/txs?from=0&to=10
