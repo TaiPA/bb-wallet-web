@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import Bitcoin from '../libs/Bitcoin';
 import { Api } from '../constants';
+import _ from 'lodash';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
 
 const styles = {
     container: {
@@ -59,7 +68,8 @@ class Sample01 extends Component {
             feeRate: null,
             sendValue: 0,
             sendTo: '',
-            sendFee: 0
+            sendFee: 0,
+            rawTxs: []
         }
     }
 
@@ -76,7 +86,7 @@ class Sample01 extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log('getBalance', responseJson);
-                this.setState({ 
+                this.setState({
                     balance: responseJson.balance,
                     unconfirmedBalance: responseJson.unconfirmedBalance
                 });
@@ -92,6 +102,18 @@ class Sample01 extends Component {
             .then((responseJson) => {
                 console.log('getUnspendOutput', responseJson);
                 this.setState({ utxo: responseJson });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    getTxs(addr) {
+        fetch(Api.BTCGetTxs(addr, 0, 40))
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('getTxs', responseJson);
+                this.setState({ rawTxs: responseJson.items });
             })
             .catch(error => {
                 console.log(error);
@@ -123,6 +145,7 @@ class Sample01 extends Component {
         this.setState({ address: btc.addr, private: btc.privateKey });
 
         this.getBalance(btc.addr);
+        this.getTxs(btc.addr);
         this.getUnspendOutput(btc.addr);
     }
 
@@ -165,6 +188,44 @@ class Sample01 extends Component {
                 this.setState({ sendFee: 0 });
             }
         }, 1000);
+    }
+
+    renderTableTxs() {
+        return (
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderColumn>Type</TableHeaderColumn>
+                        <TableHeaderColumn>From/To</TableHeaderColumn>
+                        <TableHeaderColumn>Value</TableHeaderColumn>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {
+                        _.each(this.state.rawTxs, (tx) => {
+                            console.log(tx);
+                            if (tx.vin[0].addr === this.state.address) {
+                                return (
+                                    <TableRow>
+                                        <TableRowColumn>SEND</TableRowColumn>
+                                        <TableRowColumn>{tx.vout[0].scriptPubKey.addresses[0]}</TableRowColumn>
+                                        <TableRowColumn>{tx.valueIn}</TableRowColumn>
+                                    </TableRow>
+                                )
+                            } else {
+                                return (
+                                    <TableRow>
+                                        <TableRowColumn>RECEIVE</TableRowColumn>
+                                        <TableRowColumn>{tx.vin[0].addr}</TableRowColumn>
+                                        <TableRowColumn>{tx.valueOut}</TableRowColumn>
+                                    </TableRow>
+                                )
+                            }
+                        })
+                    }
+                </TableBody>
+            </Table>
+        );
     }
 
     render() {
@@ -257,8 +318,11 @@ class Sample01 extends Component {
                         </div>
                     </Paper>
                 </div>
-                <div style={{ flex: 10 }}>
-                    List history
+
+                <div style={{ flex: 10, paddingLeft: 10, paddingRight: 20 }}>
+                    <Paper style={styles.paperPanel} zDepth={2} rounded={false}>
+                        {this.renderTableTxs()}
+                    </Paper>
                 </div>
             </div>
         );
