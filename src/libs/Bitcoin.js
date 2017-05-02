@@ -89,8 +89,9 @@ export default class Bitcoin {
             return [tx];
         } else {
             const tx = _.last(utxo);
-            _.pullAt(utxo, [utxo.length - 1]);
-            return [tx, ...this.selectUTXO(utxo, value - tx.satoshis)];
+            const nextUtxo = [...utxo];
+            _.pullAt(nextUtxo, [nextUtxo.length - 1]);
+            return [tx, ...this.selectUTXO(nextUtxo, value - tx.satoshis)];
         }
     }
 

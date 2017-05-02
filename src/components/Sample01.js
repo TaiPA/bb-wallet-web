@@ -53,11 +53,13 @@ class Sample01 extends Component {
             address: '',
             private: '',
             balance: 0,
+            unconfirmedBalance: 0,
             utxo: [],
             coinPrice: null,
-            fee: null,
+            feeRate: null,
             sendValue: 0,
-            sendTo: ''
+            sendTo: '',
+            sendFee: 0
         }
     }
 
@@ -74,7 +76,10 @@ class Sample01 extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log('getBalance', responseJson);
-                this.setState({ balance: responseJson.balance });
+                this.setState({ 
+                    balance: responseJson.balance,
+                    unconfirmedBalance: responseJson.unconfirmedBalance
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -100,7 +105,7 @@ class Sample01 extends Component {
                 console.log('getWalletConfig', responseJson);
                 this.setState({
                     coinPrice: responseJson.coinPrice,
-                    fee: responseJson.fee
+                    feeRate: responseJson.fee
                 });
             })
             .catch(error => {
@@ -122,8 +127,8 @@ class Sample01 extends Component {
     }
 
     sendBtc() {
-        const estimateFee = Bitcoin.estimateFee(this.state.utxo, this.state.sendValue, this.state.fee.btc.medium);
-        const rawTx = Bitcoin.createRawTx(this.state.utxo, this.state.sendTo, this.state.sendValue, this.state.private, estimateFee, this.state.fee.btc.medium);
+        const estimateFee = Bitcoin.estimateFee(this.state.utxo, this.state.sendValue, this.state.feeRate.btc.medium);
+        const rawTx = Bitcoin.createRawTx(this.state.utxo, this.state.sendTo, this.state.sendValue, this.state.private, estimateFee, this.state.feeRate.btc.medium);
         console.log('sendBtc - rawTx', rawTx);
 
         fetch(Api.BTCSendRawTx(), {
@@ -151,6 +156,15 @@ class Sample01 extends Component {
 
     handleChangeSendValue(event, newValue) {
         this.setState({ sendValue: newValue });
+        clearTimeout(this.caculateFee);
+        this.caculateFee = setTimeout(() => {
+            if (Number(newValue) > 0) {
+                const estimateFee = Bitcoin.estimateFee(this.state.utxo, Number(newValue), this.state.feeRate.btc.medium);
+                this.setState({ sendFee: estimateFee });
+            } else {
+                this.setState({ sendFee: 0 });
+            }
+        }, 1000);
     }
 
     render() {
@@ -163,7 +177,10 @@ class Sample01 extends Component {
                                 hintText="Passphrases"
                                 style={styles.textInput}
                                 value={this.state.hdseed}
-                                onChange={(event, newValue) => { this.setState({ hdseed: newValue }) }} />
+                                onChange={(event, newValue) => { this.setState({ hdseed: newValue }) }}
+                                multiLine
+                                rowsMax={2}
+                            />
                             <RaisedButton
                                 label='Init Wallet'
                                 style={{ marginLeft: 10, marginRight: 10 }}
@@ -197,7 +214,7 @@ class Sample01 extends Component {
                                 disabled={true}
                                 hintText="Balance"
                                 style={styles.textInput}
-                                value={this.state.balance}
+                                value={this.state.unconfirmedBalance}
                             />
                         </div>
                     </Paper>
@@ -222,6 +239,15 @@ class Sample01 extends Component {
                                 style={styles.textInput}
                                 onChange={this.handleChangeSendValue.bind(this)}
                                 value={this.state.sendValue}
+                            />
+                            <div style={styles.fieldTitle}>
+                                Fee
+                            </div>
+                            <TextField
+                                hintText="BTC value"
+                                style={styles.textInput}
+                                onChange={(event, newValue) => { this.setState({ sendFee: newValue }) }}
+                                value={this.state.sendFee}
                             />
                             <RaisedButton
                                 label='SEND'
