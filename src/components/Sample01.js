@@ -9,20 +9,34 @@ import TextField from 'material-ui/TextField';
 
 const styles = {
     container: {
-        textAlign: 'left',
         display: 'flex',
-        flexDirection: 'column'
+        width: '100%',
+        // border: '1px solid red',
+        alignItems: 'center'
     },
-    row1: {
+    mainPanel: {
+        flex: 10,
+        flexDirection: 'column',
+        // border: '1px solid blue',
+        // backgroundColor: 'grey'
+        marginTop: 10,
+        marginLeft: 20
+    },
+    paperPanel: {
+        marginBottom: 10
+    },
+    row: {
         flex: 1,
+        display: 'flex',
         // border: '1px groove red',
         // justifyContent: 'flex-end'
         alignItems: 'center',
     },
     textInput: {
-        marginLeft: 20,
-        width: '500px',
-        flex: 1
+        marginLeft: 10,
+        width: '100%',
+        flex: 1,
+        // border: '1px solid blue',
     },
     fieldTitle: {
         width: 100
@@ -141,70 +155,86 @@ class Sample01 extends Component {
 
     render() {
         return (
-            <Paper zDepth={2} style={styles.container}>
-                <div style={styles.row1}>
-                    <TextField
-                        hintText="Passphrases"
-                        style={styles.textInput}
-                        value={this.state.hdseed}
-                        onChange={(event, newValue) => { this.setState({ hdseed: newValue }) }} />
-                    <RaisedButton
-                        label='Init Wallet'
-                        style={{ flex: 1 }}
-                        onTouchTap={() => this.initWallet()}
-                    />
-                    <Divider />
+            <div style={styles.container}>
+                <div style={styles.mainPanel}>
+                    <Paper style={styles.paperPanel} zDepth={2} rounded={false}>
+                        <div style={styles.row}>
+                            <TextField
+                                hintText="Passphrases"
+                                style={styles.textInput}
+                                value={this.state.hdseed}
+                                onChange={(event, newValue) => { this.setState({ hdseed: newValue }) }} />
+                            <RaisedButton
+                                label='Init Wallet'
+                                style={{ marginLeft: 10, marginRight: 10 }}
+                                onTouchTap={() => this.initWallet()}
+                            />
+                        </div>
+                        <div style={styles.row}>
+                            <span style={styles.fieldTitle}>
+                                Address
+                            </span>
+                            <TextField
+                                hintText="Address"
+                                disabled={true}
+                                style={styles.textInput}
+                                value={this.state.address} />
+                        </div>
+                        <div style={styles.row}>
+                            <span style={styles.fieldTitle}>
+                                Balance
+                            </span>
+                            <TextField
+                                disabled={true}
+                                hintText="Balance"
+                                style={styles.textInput}
+                                value={this.state.balance}
+                            />
+                            <span style={styles.fieldTitle}>
+                                Unconfirmed
+                            </span>
+                            <TextField
+                                disabled={true}
+                                hintText="Balance"
+                                style={styles.textInput}
+                                value={this.state.balance}
+                            />
+                        </div>
+                    </Paper>
+                    <Paper style={styles.paperPanel} zDepth={2} rounded={false}>
+                        <div style={styles.row}>
+                            <div style={styles.fieldTitle}>
+                                SendTo
+                            </div>
+                            <TextField
+                                hintText="Btc Address"
+                                style={styles.textInput}
+                                onChange={this.handleChangeSendToAddress.bind(this)}
+                                value={this.state.sendTo}
+                            />
+                        </div>
+                        <div style={styles.row}>
+                            <div style={styles.fieldTitle}>
+                                Value
+                            </div>
+                            <TextField
+                                hintText="BTC value"
+                                style={styles.textInput}
+                                onChange={this.handleChangeSendValue.bind(this)}
+                                value={this.state.sendValue}
+                            />
+                            <RaisedButton
+                                label='SEND'
+                                onTouchTap={() => this.sendBtc()}
+                                style={{ marginLeft: 10, marginRight: 10 }}
+                            />
+                        </div>
+                    </Paper>
                 </div>
-                <div style={styles.row1}>
-                    <span style={styles.fieldTitle}>
-                        Address
-                    </span>
-                    <TextField
-                        hintText="Address"
-                        disabled={true}
-                        style={styles.textInput}
-                        value={this.state.address} />
-                    <Divider />
+                <div style={{ flex: 10 }}>
+                    List history
                 </div>
-                <div style={styles.row1}>
-                    <span style={styles.fieldTitle}>
-                        Balance
-                    </span>
-                    <TextField
-                        disabled={true}
-                        hintText="Balance"
-                        style={styles.textInput}
-                        value={this.state.balance}
-                    />
-                    <Divider />
-                </div>
-                <div style={styles.row1}>
-                    <span style={styles.fieldTitle}>
-                        SendTo
-                    </span>
-                    <TextField
-                        hintText="Btc Address"
-                        style={styles.textInput}
-                        onChange={this.handleChangeSendToAddress.bind(this)}
-                        value={this.state.sendTo}
-                    />
-                </div>
-                <div style={styles.row1}>
-                    <span style={styles.fieldTitle}>
-                        Value
-                    </span>
-                    <TextField
-                        hintText="BTC value"
-                        style={styles.textInput}
-                        onChange={this.handleChangeSendValue.bind(this)}
-                        value={this.state.sendValue}
-                    />
-                    <RaisedButton
-                        label='SEND'
-                        onTouchTap={() => this.sendBtc()}
-                    />
-                </div>
-            </Paper>
+            </div>
         );
     }
 }

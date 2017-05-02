@@ -15,3 +15,10 @@ https://testnet.blockexplorer.com/api/addr/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS?no
 https://testnet.blockexplorer.com/api/txs/?address=mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS
 
 https://testnet.blockexplorer.com/api/addrs/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS/txs?from=0&to=10
+
+
+3Ex7CuofVgzzaqVviJRQJqdaLbcKR6tYVw
+https://blockexplorer.com/api/addr/3Ex7CuofVgzzaqVviJRQJqdaLbcKR6tYVw?noTxList=1&noCache=1
+
+https://test-insight.bitpay.com/api/addr/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS?noTxList=1&noCache=1
+https://test-insight.bitpay.com/api/addrs/mpFnJAWZbWFjBkGRiZgvuTAaSXwVamukdS/txs?from=0&to=10
