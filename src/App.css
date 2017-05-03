@@ -1,5 +1,20 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  margin: 0px;
+}
+
+#root {
+  display: flex;
+  flex: 1;
+}
+
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex: 1
 }
 
 .App-logo {
@@ -16,6 +31,13 @@
   align-items: center;
 }
 
+.App-body {
+  flex: 1;
+  overflow-y: scroll;
+  display: flex;
+
+}
+
 .App-intro {
   font-size: large;
 }
@@ -24,3 +46,4 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+

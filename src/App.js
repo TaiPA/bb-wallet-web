@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import Sample01 from './components/Sample01';
+import Flexbox from './components/Flexbox'
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +21,9 @@ class App extends Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h2>BB-Wallet-Web</h2>
           </div>
-          <Sample01 />
+          <div className="App-body">
+            <Sample01 />
+          </div>
         </div>
       </MuiThemeProvider>
     );

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+// import { Table, Thead, Th, Tr, Td } from 'reactable';
 
 import {
     Table,
@@ -19,12 +20,12 @@ import {
 const styles = {
     container: {
         display: 'flex',
-        width: '100%',
+        flex: 1,
         // border: '1px solid red',
-        alignItems: 'center'
+        alignItems: 'stretch'
     },
     mainPanel: {
-        flex: 10,
+        flex: 1,
         flexDirection: 'column',
         // border: '1px solid blue',
         // backgroundColor: 'grey'
@@ -33,6 +34,16 @@ const styles = {
     },
     paperPanel: {
         marginBottom: 10
+    },
+    paperPanel2: {
+        marginBottom: 10,
+        flex: 1,
+        margin: 15,
+        marginTop: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        overflowY: 'auto',
+        position: 'relative',
     },
     row: {
         flex: 1,
@@ -69,12 +80,17 @@ class Sample01 extends Component {
             sendValue: 0,
             sendTo: '',
             sendFee: 0,
-            rawTxs: []
+            rawTxs: [],
+            tableHeight: '400px'
         }
     }
 
     componentDidMount() {
         this.getWalletConfig();
+        const a = document.getElementById('aaa').clientHeight - 58;
+        console.log('tableHeight', a);
+        
+        this.setState({ tableHeight: `${a}px` });
     }
 
     componentWillUnmount() {
@@ -190,34 +206,85 @@ class Sample01 extends Component {
         }, 1000);
     }
 
+    /*renderTableTxs() {
+        return (
+            <Table className="table" id="table">
+                <Thead>
+                    <Th column="name">
+                        <strong className="name-header">First Name, Last Name</strong>
+                    </Th>
+                    <Th column="age">
+                        <em className="age-header">Age, years</em>
+                    </Th>
+                </Thead>
+                <Tr>
+                    <Td column="name" data="Griffin Smith">
+                        <b>Griffin Smith</b>
+                    </Td>
+                    <Td column="age">18</Td>
+                </Tr>
+                <Tr>
+                    <Td column="name">Lee Salminen</Td>
+                    <Td column="age">23</Td>
+                </Tr>
+                <Tr>
+                    <Td column="position">Developer</Td>
+                    <Td column="age">28</Td>
+                </Tr>
+            </Table>
+        )
+    }*/
+
     renderTableTxs() {
         return (
-            <Table>
-                <TableHeader>
+            <Table
+                fixedHeader
+                style={{ flex: 1 }}
+                height={this.state.tableHeight}
+            >
+                <TableHeader
+                    adjustForCheckbox={false}
+                    displaySelectAll={false}
+                >
                     <TableRow>
-                        <TableHeaderColumn>Type</TableHeaderColumn>
+                        <TableHeaderColumn
+                            style={{ width: 70 }}
+                        >Type</TableHeaderColumn>
                         <TableHeaderColumn>From/To</TableHeaderColumn>
-                        <TableHeaderColumn>Value</TableHeaderColumn>
+                        <TableHeaderColumn
+                            style={{ width: 100 }}
+                        >Value</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody
+                    stripedRows
+                    displayRowCheckbox={false}
+                >
                     {
-                        _.each(this.state.rawTxs, (tx) => {
-                            console.log(tx);
+                        this.state.rawTxs.map((tx, index) => {
+                            console.log('this.state.rawTxs.map', tx);
                             if (tx.vin[0].addr === this.state.address) {
                                 return (
-                                    <TableRow>
-                                        <TableRowColumn>SEND</TableRowColumn>
+                                    <TableRow key={tx.txid}>
+                                        <TableRowColumn
+                                            style={{ width: 70 }}
+                                        >SEND</TableRowColumn>
                                         <TableRowColumn>{tx.vout[0].scriptPubKey.addresses[0]}</TableRowColumn>
-                                        <TableRowColumn>{tx.valueIn}</TableRowColumn>
+                                        <TableRowColumn
+                                            style={{ width: 100 }}
+                                        >{tx.valueIn}</TableRowColumn>
                                     </TableRow>
                                 )
                             } else {
                                 return (
-                                    <TableRow>
-                                        <TableRowColumn>RECEIVE</TableRowColumn>
+                                    <TableRow key={tx.txid}>
+                                        <TableRowColumn
+                                            style={{ width: 70 }}
+                                        >RECEIVE</TableRowColumn>
                                         <TableRowColumn>{tx.vin[0].addr}</TableRowColumn>
-                                        <TableRowColumn>{tx.valueOut}</TableRowColumn>
+                                        <TableRowColumn
+                                            style={{ width: 100 }}
+                                        >{tx.valueOut}</TableRowColumn>
                                     </TableRow>
                                 )
                             }
@@ -319,11 +386,10 @@ class Sample01 extends Component {
                     </Paper>
                 </div>
 
-                <div style={{ flex: 10, paddingLeft: 10, paddingRight: 20 }}>
-                    <Paper style={styles.paperPanel} zDepth={2} rounded={false}>
-                        {this.renderTableTxs()}
-                    </Paper>
-                </div>
+                <Paper style={styles.paperPanel2} zDepth={2} rounded={false} id='aaa'>
+                    {this.renderTableTxs()}
+                </Paper>
+
             </div>
         );
     }
